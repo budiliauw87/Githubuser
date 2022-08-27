@@ -33,7 +33,8 @@ public class ApiRequest {
     private static final String TAG = ApiRequest.class.getSimpleName();
     // DEFAULT 10 SECOND FOR TIMEOUT
     private final int INITIAL_TIME_OUT = 10000, MIDDLE_TIME_OUT = 30000, MAXIMUM_TIME_OUT = 60000;
-    private int MODE_TIMEOUT = 0, MAX_NUM_RETRY = 0;
+    private final int MODE_TIMEOUT = 0;
+    private final int MAX_NUM_RETRY = 0;
     private RequestQueue requestQueue;
     private final Context context;
     private SSLSocketFactory socket;
