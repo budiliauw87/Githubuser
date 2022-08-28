@@ -15,9 +15,9 @@ import androidx.room.PrimaryKey;
  */
 @Entity
 public class UserEntity implements Parcelable {
-    @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "id")
+    @PrimaryKey
+    @ColumnInfo(name = "id",defaultValue = "githubUser")
     private String id;
 
     @ColumnInfo(name = "login")

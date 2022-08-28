@@ -5,4 +5,5 @@
     <string name="follower">Follower</string>
     <string name="following">Following</string>
     <string name="repo">Repo</string>
+    <string name="title_retry">Ulangi</string>
 </resources>

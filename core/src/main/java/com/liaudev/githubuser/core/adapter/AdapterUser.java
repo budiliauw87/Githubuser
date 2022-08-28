@@ -84,9 +84,8 @@ public class AdapterUser extends PagingDataAdapter<User, AdapterUser.UserViewHol
                         .apply(options)
                         .into(itemUserBinding.thumbnail);
                 itemUserBinding.getRoot().setOnClickListener((v) -> {
-                    Intent intent = null;
                     try {
-                        intent = new Intent(itemView.getContext(), Class.forName("com.liaudev.githubuser.detail.DetailActivity"));
+                        Intent intent = new Intent(itemView.getContext(), Class.forName("com.liaudev.githubuser.detail.DetailActivity"));
                         intent.putExtra("userObject", user);
                         itemView.getContext().startActivity(intent);
                     } catch (ClassNotFoundException e) {

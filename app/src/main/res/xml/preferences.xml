@@ -17,7 +17,7 @@
         android:defaultValue="en"
         android:entries="@array/pref_lang_list_titles"
         android:entryValues="@array/pref_lang_list_values"
-        android:icon="@drawable/ic_baseline_language_24"
+        android:icon="@drawable/ic_baseline_outlined_flag_24"
         android:key="language_app"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"

@@ -7,7 +7,7 @@ package com.liaudev.githubuser.core.utils;
  */
 public class Utils {
     public static String getQueryGraph(String query, String lastCursor, int method) {
-        String resultQueryGraph = "", querySearch = "", cursorAfter = "";
+        String resultQueryGraph, querySearch, cursorAfter;
         switch (method) {
             case 0:
                 querySearch = query.isEmpty() ? "language:java" : query;
@@ -27,6 +27,9 @@ public class Utils {
                 resultQueryGraph = "query { user( login: \"" + query + "\" ) { following( first:10" + cursorAfter +
                         " ) { edges{ node{ ... on User { id login name location email company avatarUrl followers " +
                         "{ totalCount } following { totalCount } repositories{ totalCount }}} cursor}}}}";
+                break;
+            default:
+                resultQueryGraph = "";
                 break;
         }
 

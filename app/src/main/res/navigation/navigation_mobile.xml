@@ -13,6 +13,7 @@
         android:name="com.liaudev.githubuser.setting.SettingFragment"
         android:label="@string/title_settings" />
 
+    <!--suppress AndroidDomInspection -->
     <fragment
         android:id="@+id/navigation_favorite"
         android:name="com.liaudev.githubuser.favoritefeature.FavoriteFragment"

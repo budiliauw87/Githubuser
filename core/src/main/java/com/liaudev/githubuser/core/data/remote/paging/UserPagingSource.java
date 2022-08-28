@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import androidx.paging.PagingState;
 import androidx.paging.rxjava2.RxPagingSource;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.liaudev.githubuser.core.data.remote.network.ApiRequest;
@@ -23,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.IntFunction;
 
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
@@ -36,7 +36,7 @@ import io.reactivex.schedulers.Schedulers;
 public class UserPagingSource extends RxPagingSource<String, User> {
     private final ApiRequest api;
     private String mQuery;
-    private int methodQuery = 0;
+    private final int methodQuery;
 
     public UserPagingSource(String query, ApiRequest apiRequest, int method) {
         this.api = apiRequest;
@@ -59,7 +59,9 @@ public class UserPagingSource extends RxPagingSource<String, User> {
         return fetchUser(mQuery, cursor)
                 .subscribeOn(Schedulers.io())
                 .map((Function<UserResponse, LoadResult<String, User>>) userResponse -> {
-                    return new LoadResult.Page(userResponse.getUserList(), cursor.isEmpty() ? null : cursor, userResponse.getNextCursor());
+                    final String prevCursor = cursor.isEmpty() ? null : cursor;
+                    final String nextCursor = userResponse.getNextCursor();
+                    return new LoadResult.Page(userResponse.getUserList(), prevCursor, nextCursor);
                 }).onErrorReturn(LoadResult.Error::new);
     }
 
@@ -71,6 +73,7 @@ public class UserPagingSource extends RxPagingSource<String, User> {
                 jsonparams.put("query", queryGraph);
                 final String payload = jsonparams.toString();
                 api.addToRequestQueue(new CustomRequest(Request.Method.POST, Constants.URL_GRAPH_GITHUB, null, response -> {
+
                     List<User> userList = new ArrayList<>();
                     String finalCursor = null;
                     try {
@@ -131,7 +134,7 @@ public class UserPagingSource extends RxPagingSource<String, User> {
                     emitter.onError(new VolleyError(errorMsg));
                 }) {
                     @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {
+                    public Map<String, String> getHeaders() {
                         return api.getHeaders();
                     }
 

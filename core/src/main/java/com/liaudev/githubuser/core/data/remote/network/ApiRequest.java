@@ -3,7 +3,6 @@ package com.liaudev.githubuser.core.data.remote.network;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -39,19 +38,13 @@ public class ApiRequest {
     private final Context context;
     private SSLSocketFactory socket;
 
-    public ApiRequest(Context context) {
+    public ApiRequest(Context context, SSLSocketFactory sslSocketFactory) {
         this.context = context;
-        try {
-            TrustKit.initializeWithNetworkSecurityConfiguration(context);
-            socket = TrustKit.getInstance().getSSLSocketFactory("github.com");
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        this.socket = sslSocketFactory;
     }
 
     private RequestQueue getRequestQueue() {
         if (requestQueue == null) {
-
             requestQueue = Volley.newRequestQueue(context.getApplicationContext(), new HurlStack(null, socket));
         }
         return requestQueue;
@@ -59,34 +52,36 @@ public class ApiRequest {
 
     public <T> void addToRequestQueue(Request<T> request) {
         request.setTag(TAG);
-        if (MODE_TIMEOUT == 1) {
-            request.setRetryPolicy(new DefaultRetryPolicy(MIDDLE_TIME_OUT, MAX_NUM_RETRY, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        } else if (MODE_TIMEOUT == 2) {
-            request.setRetryPolicy(new DefaultRetryPolicy(MAXIMUM_TIME_OUT, MAX_NUM_RETRY, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        } else {
-            request.setRetryPolicy(new DefaultRetryPolicy(INITIAL_TIME_OUT, MAX_NUM_RETRY, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        final DefaultRetryPolicy defaultRetryPolicy;
+        if(MODE_TIMEOUT == 0){
+            defaultRetryPolicy = new DefaultRetryPolicy(INITIAL_TIME_OUT, MAX_NUM_RETRY, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        }else if(MODE_TIMEOUT == 1){
+            defaultRetryPolicy = new DefaultRetryPolicy(MIDDLE_TIME_OUT, MAX_NUM_RETRY, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        }else if(MODE_TIMEOUT == 2){
+            defaultRetryPolicy = new DefaultRetryPolicy(MAXIMUM_TIME_OUT, MAX_NUM_RETRY, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         }
 
+        request.setRetryPolicy(defaultRetryPolicy);
         getRequestQueue().add(request);
     }
 
     private <T> void addToRequestQueue(Request<T> request, String tag) {
         request.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
-        if (MODE_TIMEOUT == 1) {
-            request.setRetryPolicy(new DefaultRetryPolicy(MIDDLE_TIME_OUT, MAX_NUM_RETRY, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        } else if (MODE_TIMEOUT == 2) {
-            request.setRetryPolicy(new DefaultRetryPolicy(MAXIMUM_TIME_OUT, MAX_NUM_RETRY, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        } else {
-            request.setRetryPolicy(new DefaultRetryPolicy(INITIAL_TIME_OUT, MAX_NUM_RETRY, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        final DefaultRetryPolicy defaultRetryPolicy;
+        if(MODE_TIMEOUT == 0){
+            defaultRetryPolicy = new DefaultRetryPolicy(INITIAL_TIME_OUT, MAX_NUM_RETRY, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        }else if(MODE_TIMEOUT == 1){
+            defaultRetryPolicy = new DefaultRetryPolicy(MIDDLE_TIME_OUT, MAX_NUM_RETRY, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        }else if(MODE_TIMEOUT == 2){
+            defaultRetryPolicy = new DefaultRetryPolicy(MAXIMUM_TIME_OUT, MAX_NUM_RETRY, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         }
+        request.setRetryPolicy(defaultRetryPolicy);
         getRequestQueue().add(request);
     }
 
     public void cancelPendingRequests(Object tag) {
         if (requestQueue != null) {
-            requestQueue.cancelAll((req) -> {
-                return true;
-            });
+            requestQueue.cancelAll((req) -> true);
         }
     }
 
@@ -110,8 +105,8 @@ public class ApiRequest {
         return msgError;
     }
 
-    public Map<String, String> getHeaders() throws AuthFailureError {
-        Map<String, String> params = new HashMap<String, String>();
+    public Map<String, String> getHeaders()  {
+        Map<String, String> params = new HashMap<>();
         params.put("Content-Type", "application/json");
         params.put("Authorization", String.format(context.getString(R.string.token_format), BuildConfig.TOKEN_GITHUB));
         return params;

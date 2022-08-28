@@ -3,6 +3,8 @@ package com.liaudev.githubuser.core.data;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.Objects;
+
 
 /**
  * Created by Budiliauw87 on 2020-12-30.
@@ -51,10 +53,10 @@ public class Resource<T> {
         if (status != resource.status) {
             return false;
         }
-        if (message != null ? !message.equals(resource.message) : resource.message != null) {
+        if (!Objects.equals(message, resource.message)) {
             return false;
         }
-        return data != null ? data.equals(resource.data) : resource.data == null;
+        return Objects.equals(data, resource.data);
     }
 
     @Override
@@ -65,6 +67,7 @@ public class Resource<T> {
         return result;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Resource{" +

@@ -25,18 +25,14 @@ public class EncryptedPref extends PreferenceDataStore {
     public EncryptedPref(Context context) {
         try {
             final String settingPrefName = context.getString(R.string.setting_pref_name);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                String masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
-                sharedPref = EncryptedSharedPreferences.create(
-                        settingPrefName,
-                        masterKeyAlias,
-                        context,
-                        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-                );
-            } else {
-                sharedPref = new SecurePreferences(context, "GithubUser", settingPrefName);
-            }
+            String masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
+            sharedPref = EncryptedSharedPreferences.create(
+                    settingPrefName,
+                    masterKeyAlias,
+                    context,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
         } catch (Exception e) {
             e.printStackTrace();
         }

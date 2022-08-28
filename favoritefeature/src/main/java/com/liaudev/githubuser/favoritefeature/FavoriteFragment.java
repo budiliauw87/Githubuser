@@ -49,7 +49,7 @@ public class FavoriteFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentFavoriteBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -61,9 +61,7 @@ public class FavoriteFragment extends Fragment {
         AdapterFavorite adapterFavorite = new AdapterFavorite();
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         binding.recyclerView.setAdapter(adapterFavorite.withLoadStateFooter(
-                new AdapterLoadState((v) -> {
-                    adapterFavorite.retry();
-                })
+                new AdapterLoadState((v) -> adapterFavorite.retry())
         ));
 
         adapterFavorite.addLoadStateListener(combinedLoadStates -> {
@@ -78,9 +76,7 @@ public class FavoriteFragment extends Fragment {
 
             return null;
         });
-        viewModel.getFavorite().observe(getViewLifecycleOwner(), (pagingData -> {
-            adapterFavorite.submitData(getLifecycle(), pagingData);
-        }));
+        viewModel.getFavorite().observe(getViewLifecycleOwner(), (pagingData -> adapterFavorite.submitData(getLifecycle(), pagingData)));
 
     }
 

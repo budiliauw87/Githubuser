@@ -30,9 +30,7 @@ public class AdapterFavorite extends PagingDataAdapter<UserEntity, AdapterFavori
     public static final int LOADING_ITEM = 0;
     public static final int STORY_ITEM = 1;
 
-    public AdapterFavorite() {
-        super(new ComparatorUserEntity());
-    }
+    public AdapterFavorite() { super(new ComparatorUserEntity());}
 
     @NonNull
     @Override
@@ -86,9 +84,8 @@ public class AdapterFavorite extends PagingDataAdapter<UserEntity, AdapterFavori
                         .apply(options)
                         .into(itemUserBinding.thumbnail);
                 itemUserBinding.getRoot().setOnClickListener((v) -> {
-                    Intent intent = null;
                     try {
-                        intent = new Intent(itemView.getContext(), Class.forName("com.liaudev.githubuser.detail.DetailActivity"));
+                        Intent intent = new Intent(itemView.getContext(), Class.forName("com.liaudev.githubuser.detail.DetailActivity"));
                         intent.putExtra("userObject", user);
                         itemView.getContext().startActivity(intent);
                     } catch (ClassNotFoundException e) {

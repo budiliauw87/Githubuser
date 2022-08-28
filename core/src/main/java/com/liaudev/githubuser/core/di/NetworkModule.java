@@ -2,7 +2,10 @@ package com.liaudev.githubuser.core.di;
 
 import android.content.Context;
 
+import com.datatheorem.android.trustkit.TrustKit;
 import com.liaudev.githubuser.core.data.remote.network.ApiRequest;
+
+import javax.net.ssl.SSLSocketFactory;
 
 import dagger.Module;
 import dagger.Provides;
@@ -18,9 +21,12 @@ import dagger.hilt.components.SingletonComponent;
 @InstallIn({SingletonComponent.class})
 public class NetworkModule {
 
+
     @Provides
     static ApiRequest provideApiService(@ApplicationContext Context context) {
-        return new ApiRequest(context);
+        TrustKit.initializeWithNetworkSecurityConfiguration(context);
+        SSLSocketFactory sslSocketFactory =  TrustKit.getInstance().getSSLSocketFactory("github.com");
+        return new ApiRequest(context,sslSocketFactory);
     }
 
 }

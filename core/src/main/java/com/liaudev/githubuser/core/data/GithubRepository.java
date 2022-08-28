@@ -45,9 +45,7 @@ public class GithubRepository implements IGithubRepository {
     @Override
     public LiveData<User> getFavoriteById(String id) {
         LiveData<UserEntity> userEntityLiveData = localSource.getFavoriteById(id);
-        LiveData<User> userLiveData = Transformations.map(userEntityLiveData,
-                user-> DataMapper.mapEntityToDomain(user));
-        return userLiveData;
+        return Transformations.map(userEntityLiveData, DataMapper::mapEntityToDomain);
     }
 
     @Override
@@ -58,18 +56,14 @@ public class GithubRepository implements IGithubRepository {
     @Override
     public void setFavorite(User user) {
         if(user!=null){
-            executorService.execute(() -> {
-                localSource.setFavorite(DataMapper.mapDomainToEntity(user));
-            });
+            executorService.execute(() -> localSource.setFavorite(DataMapper.mapDomainToEntity(user)));
         }
     }
 
     @Override
     public void deleteFavorite(String id) {
         if(id!=null){
-            executorService.execute(() -> {
-                localSource.deleteFavorite(id);
-            });
+            executorService.execute(() -> localSource.deleteFavorite(id));
         }
     }
 }

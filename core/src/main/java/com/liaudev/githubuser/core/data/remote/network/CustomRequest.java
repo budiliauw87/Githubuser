@@ -1,6 +1,5 @@
 package com.liaudev.githubuser.core.data.remote.network;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
@@ -29,7 +28,7 @@ public class CustomRequest extends Request<JSONObject> {
         this.params = params;
     }
 
-    protected Map<String, String> getParams() throws AuthFailureError {
+    protected Map<String, String> getParams(){
         return params;
     }
 
